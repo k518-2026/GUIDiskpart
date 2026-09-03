@@ -1,7 +1,3 @@
-
----
-
-```markdown
 # 💾 GUI DiskPart Studio (`GUIDiskpart`)
 
 > Windowsの複雑なディスク管理コマンド（DiskPart / Storage API）を、安全・直感的・モダンなGUIで操作できるC# / WPFユーティリティアプリケーション。
