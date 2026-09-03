@@ -1,0 +1,101 @@
+﻿<Window x:Class="GUIDiskpart.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:GUIDiskpart" 
+        Title="GUI DiskPart Studio" Height="580" Width="760"
+        SizeToContent="WidthAndHeight" 
+        Loaded="Window_Loaded"
+        Background="#FFF4F4F6">
+
+    <Grid Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3.2*" />
+            <ColumnDefinition Width="2.2*" />
+        </Grid.ColumnDefinitions>
+
+        <!-- 左カラム：更新ボタン ＋ ディスクツリー -->
+        <Grid Grid.Column="0" Margin="0,0,12,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Button x:Name="btnRefresh" Grid.Row="0" Content="🔄 ディスク情報を再認識 (USB対応)" 
+                    Margin="0,0,0,10" Padding="10" FontWeight="Bold" Background="#FFE1E6EB" Cursor="Hand" Click="btnRefresh_Click"/>
+
+            <TreeView x:Name="treeDisks" Grid.Row="1" SelectedItemChanged="treeDisks_SelectedItemChanged" BorderBrush="#FFCCD1D9">
+                <TreeView.ItemContainerStyle>
+                    <Style TargetType="TreeViewItem">
+                        <Setter Property="IsExpanded" Value="True" />
+                        <Setter Property="Padding" Value="4"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsDangerous}" Value="True">
+                                <Setter Property="Background" Value="#FFFFD6D6" />
+                                <Setter Property="Foreground" Value="#FF900000" />
+                            </DataTrigger>
+                            <DataTrigger Binding="{Binding IsInternal}" Value="True">
+                                <Setter Property="Background" Value="#FFFFF3D6" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </TreeView.ItemContainerStyle>
+
+                <TreeView.Resources>
+                    <DataTemplate x:Key="PartitionTemplate">
+                        <StackPanel Orientation="Horizontal" Margin="2">
+                            <TextBlock Text="└ パーティション " Foreground="#FF7A8288"/>
+                            <TextBlock Text="{Binding PartitionNumber}" FontWeight="Bold" Margin="0,0,6,0" />
+                            <TextBlock Text="{Binding DriveLetterString}" Foreground="#FF0056B3" FontWeight="Bold" Margin="0,0,6,0" />
+                            <TextBlock Text="{Binding SizeGB}" Margin="0,0,4,0" />
+                            <TextBlock Text="GB (" Foreground="#FF7A8288"/>
+                            <TextBlock Text="{Binding Type}" Foreground="#FF7A8288" />
+                            <TextBlock Text=")" Foreground="#FF7A8288" />
+                        </StackPanel>
+                    </DataTemplate>
+
+                    <HierarchicalDataTemplate DataType="{x:Type local:DiskInfo}" 
+                                              ItemsSource="{Binding Partitions}" 
+                                              ItemTemplate="{StaticResource PartitionTemplate}">
+                        <StackPanel Orientation="Horizontal" Margin="2,4">
+                            <TextBlock Text="💾 Disk " FontWeight="Bold" />
+                            <TextBlock Text="{Binding Number}" FontWeight="Bold" Margin="0,0,8,0" />
+                            <TextBlock Text="{Binding FriendlyName}" Margin="0,0,8,0" />
+                            <TextBlock Text="{Binding SizeGB}" Margin="0,0,4,0" />
+                            <TextBlock Text="GB [" Foreground="#FF7A8288"/>
+                            <TextBlock Text="{Binding BusType}" Foreground="#FF7A8288"/>
+                            <TextBlock Text="]" Foreground="#FF7A8288"/>
+                            <TextBlock Text="{Binding WarningLabel}" Foreground="#FFD9534F" FontWeight="Bold" Margin="8,0,0,0"/>
+                        </StackPanel>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </Grid>
+
+        <!-- 右カラム：操作パネル -->
+        <StackPanel Grid.Column="1" x:Name="OperationPanel">
+            <Border Background="White" BorderBrush="#FFCCD1D9" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,12">
+                <TextBlock x:Name="txtSelectedTarget" Text="選択項目: なし (ツリーから選択してください)" FontWeight="Bold" TextWrapping="Wrap" Foreground="#FF333333"/>
+            </Border>
+
+            <GroupBox Header=" ディスク全体への操作 " Margin="0,0,0,10" FontWeight="Bold">
+                <StackPanel Margin="5">
+                    <Button x:Name="btnClean" Content="1. Clean (全消去・初期化)" Margin="0,4" Padding="8" Background="#FFFFD6D6" Foreground="#FF900000" Cursor="Hand" Click="btnClean_Click" IsEnabled="False" />
+                    <Button x:Name="btnPartition" Content="2. 最大パーティション作成" Margin="0,4" Padding="8" Cursor="Hand" Click="btnPartition_Click" IsEnabled="False" />
+                    <!-- 新規追加：イジェクトボタン -->
+                    <Button x:Name="btnEject" Content="⏏️ 安全に取り外す (イジェクト)" Margin="0,4" Padding="8" Background="#FFE6F7FF" Foreground="#FF0056B3" Cursor="Hand" Click="btnEject_Click" IsEnabled="False" />
+                </StackPanel>
+            </GroupBox>
+
+            <GroupBox Header=" 選択パーティションへの操作 " Margin="0,0,0,10" FontWeight="Bold">
+                <StackPanel Margin="5">
+                    <Button x:Name="btnFormat" Content="3. フォーマット (NTFS)" Margin="0,4" Padding="8" Cursor="Hand" Click="btnFormat_Click" IsEnabled="False" />
+                    <Button x:Name="btnAssign" Content="4. ドライブレター自動割当" Margin="0,4" Padding="8" Cursor="Hand" Click="btnAssign_Click" IsEnabled="False" />
+                    <Button x:Name="btnDeletePartition" Content="5. パーティション削除" Margin="0,4" Padding="8" Background="#FFFFD6D6" Foreground="#FF900000" Cursor="Hand" Click="btnDeletePartition_Click" IsEnabled="False" />
+                </StackPanel>
+            </GroupBox>
+
+            <ProgressBar x:Name="progBusy" Height="12" Margin="0,8,0,4" IsIndeterminate="True" Visibility="Hidden" />
+            <TextBlock x:Name="txtStatus" Text="待機中..." Foreground="#FF0056B3" TextWrapping="Wrap" FontWeight="SemiBold"/>
+        </StackPanel>
+    </Grid>
+</Window>
