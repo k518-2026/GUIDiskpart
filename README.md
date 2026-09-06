@@ -14,27 +14,6 @@
 
 ---
 
-## 📸 Screenshots / UI Layout
-
-```text
-+-------------------------------------------------------------+
-| 🔄 Rescan Disk Information (USB Support)                      |
-+-----------------------------+-------------------------------+
-| 💾 Disk 1 [USB] 14.90GB     | [ Selected Item: Disk 1 (USB Drive) ]|
-|   └ Partition 1 [E:]        |                               |
-| 💾 Disk 2 [SATA] 476.94GB   | [ Operations for Entire Disk ]  |
-|   [OS Protection]           |  - 1. Clean (Erase All / Initialize)|
-|                             |  - 2. Create Max Partition      |
-|                             |  - ⏏️ Safely Remove (Eject)     |
-|                             |                               |
-|                             | [ Operations for Selected Partition ]|
-|                             |  - 3. Format (NTFS)             |
-|                             |  - 4. Auto-Assign Drive Letter  |
-|                             |  - 5. Delete Partition          |
-+-----------------------------+-------------------------------+
-
-
-
 # 💾 GUI DiskPart Studio (`GUIDiskpart`)
 
 > Windowsの複雑なディスク管理コマンド（DiskPart / Storage API）を、安全・直感的・モダンなGUIで操作できるC# / WPFユーティリティアプリケーション。
