@@ -2,6 +2,9 @@
 
 > A C# / WPF utility application that allows you to operate Windows' complex disk management commands (DiskPart / Storage API) via a safe, intuitive, and modern GUI[cite: 2].
 
+Downloda ZIP file
+https://github.com/k518-2026/GUIDiskpart/releases
+
 ---
 
 ## 🌟 Features
