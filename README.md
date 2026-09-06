@@ -1,5 +1,42 @@
 # 💾 GUI DiskPart Studio (`GUIDiskpart`)
 
+> A C# / WPF utility application that allows you to operate Windows' complex disk management commands (DiskPart / Storage API) via a safe, intuitive, and modern GUI[cite: 2].
+
+---
+
+## 🌟 Features (特徴)
+
+*   **Fully GUI-based:** Eliminates command-line memorization and typos, enabling disk management through intuitive tree-view operations[cite: 2].
+*   **Ironclad Failsafe (Safety First):** Automatically detects the system drive where the OS is installed and internal disks, **completely locking operation buttons** to prevent destruction from accidental operations[cite: 2].
+*   **USB Hot-Plug Support:** Even if a USB flash drive is inserted or removed after launching the app, the "Rescan Disk Information" button instantly scans the latest state[cite: 2].
+*   **Asynchronous Processing (Async/Await):** The UI does not freeze even during heavy I/O processing, and a progress bar notifies you of visual progress and wait states[cite: 2].
+*   **Complete Prevention of Garbled Text:** Completely unifies JSON data exchange with PowerShell to UTF-8, ensuring stable operation in both Japanese and English environments[cite: 2].
+
+---
+
+## 📸 Screenshots / UI Layout
+
+```text
++-------------------------------------------------------------+
+| 🔄 Rescan Disk Information (USB Support)                      |
++-----------------------------+-------------------------------+
+| 💾 Disk 1 [USB] 14.90GB     | [ Selected Item: Disk 1 (USB Drive) ]|
+|   └ Partition 1 [E:]        |                               |
+| 💾 Disk 2 [SATA] 476.94GB   | [ Operations for Entire Disk ]  |
+|   [OS Protection]           |  - 1. Clean (Erase All / Initialize)|
+|                             |  - 2. Create Max Partition      |
+|                             |  - ⏏️ Safely Remove (Eject)     |
+|                             |                               |
+|                             | [ Operations for Selected Partition ]|
+|                             |  - 3. Format (NTFS)             |
+|                             |  - 4. Auto-Assign Drive Letter  |
+|                             |  - 5. Delete Partition          |
++-----------------------------+-------------------------------+
+
+
+
+# 💾 GUI DiskPart Studio (`GUIDiskpart`)
+
 > Windowsの複雑なディスク管理コマンド（DiskPart / Storage API）を、安全・直感的・モダンなGUIで操作できるC# / WPFユーティリティアプリケーション。
 
 ---
