@@ -4,7 +4,7 @@
 
 ---
 
-## 🌟 Features (特徴)
+## 🌟 Features
 
 *   **Fully GUI-based:** Eliminates command-line memorization and typos, enabling disk management through intuitive tree-view operations[cite: 2].
 *   **Ironclad Failsafe (Safety First):** Automatically detects the system drive where the OS is installed and internal disks, **completely locking operation buttons** to prevent destruction from accidental operations[cite: 2].
@@ -50,27 +50,6 @@
 *   **文字化け完全防止:** PowerShellとのJSONデータやり取りをUTF-8に完全統一し、日本語環境・英語環境の両方で安定動作。
 
 ---
-
-## 📸 スクリーンショット / UIレイアウト
-
-```text
-+-------------------------------------------------------------+
-| 🔄 ディスク情報を再認識 (USB対応)                             |
-+-----------------------------+-------------------------------+
-| 💾 Disk 1 [USB] 14.90GB     | [ 選択項目: Disk 1 (USB Drive) ]|
-|   └ パーティション 1 [E:]   |                               |
-| 💾 Disk 2 [SATA] 476.94GB   | [ ディスク全体への操作 ]        |
-|   [OS保護]                  |  - 1. Clean (全消去・初期化)  |
-|                             |  - 2. 最大パーティション作成    |
-|                             |  - ⏏️ 安全に取り外す (イジェクト) |
-|                             |                               |
-|                             | [ 選択パーティションへの操作 ]  |
-|                             |  - 3. フォーマット (NTFS)     |
-|                             |  - 4. 드라이브レター自動割当    |
-|                             |  - 5. パーティション削除      |
-+-----------------------------+-------------------------------+
-
-```
 
 ---
 
