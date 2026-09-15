@@ -13,10 +13,12 @@ namespace GUIDiskpart
     {
         private DiskInfo? _selectedDisk;
         private PartitionInfo? _selectedPartition;
+        private bool _isEnglish = false; // 現在の言語フラグ
 
         public MainWindow()
         {
             InitializeComponent();
+            ChangeLanguage("ja"); // 初期起動時は日本語
         }
 
         private async void Window_Loaded(object sender, RoutedEventArgs e)
@@ -27,6 +29,30 @@ namespace GUIDiskpart
         private async void btnRefresh_Click(object sender, RoutedEventArgs e)
         {
             await LoadDisksAndPartitionsAsync();
+        }
+
+        // --- 🌐 マルチ言語切り替え処理 ---
+        private void btnLang_Click(object sender, RoutedEventArgs e)
+        {
+            _isEnglish = !_isEnglish;
+            ChangeLanguage(_isEnglish ? "en" : "ja");
+        }
+
+        private void ChangeLanguage(string langCode)
+        {
+            var dict = new ResourceDictionary();
+            if (langCode == "en")
+            {
+                dict.Source = new Uri("Resources/Strings.en.xaml", UriKind.Relative);
+            }
+            else
+            {
+                dict.Source = new Uri("Resources/Strings.ja.xaml", UriKind.Relative);
+            }
+
+            // 既存の言語リソースを入れ替え
+            Application.Current.Resources.MergedDictionaries.Clear();
+            Application.Current.Resources.MergedDictionaries.Add(dict);
         }
 
         private void SetBusyState(bool isBusy, string statusMessage)
@@ -67,7 +93,7 @@ namespace GUIDiskpart
         {
             try
             {
-                SetBusyState(true, "ディスク・パーティション情報をスキャン中...");
+                SetBusyState(true, _isEnglish ? "Scanning disk and partition information..." : "ディスク・パーティション情報をスキャン中...");
 
                 string psCommand = @"
                     $disks = @(Get-Disk | Select-Object Number, FriendlyName, Size, IsSystem, IsBoot, BusType);
@@ -86,12 +112,12 @@ namespace GUIDiskpart
 
                 _selectedDisk = null;
                 _selectedPartition = null;
-                SetBusyState(false, "読み込み完了");
+                SetBusyState(false, _isEnglish ? "Scan complete" : "読み込み完了");
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"読み込みエラー: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-                SetBusyState(false, "読み込みエラーが発生しました。");
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                SetBusyState(false, _isEnglish ? "An error occurred." : "エラーが発生しました。");
             }
         }
 
@@ -100,7 +126,6 @@ namespace GUIDiskpart
             _selectedDisk = null;
             _selectedPartition = null;
 
-            // 一旦すべてのボタンを無効化
             btnClean.IsEnabled = false;
             btnPartition.IsEnabled = false;
             btnEject.IsEnabled = false;
@@ -113,20 +138,19 @@ namespace GUIDiskpart
             if (selected is DiskInfo disk)
             {
                 _selectedDisk = disk;
-                txtSelectedTarget.Text = $"選択項目: Disk {disk.Number} ({disk.FriendlyName})";
+                txtSelectedTarget.Text = _isEnglish ? $"Selected: Disk {disk.Number} ({disk.FriendlyName})" : $"選択項目: Disk {disk.Number} ({disk.FriendlyName})";
 
                 if (disk.IsDangerous || disk.IsInternal)
                 {
-                    txtStatus.Text = "システムまたは内蔵ディスクのため、安全を考慮し操作をロックしています。";
+                    txtStatus.Text = _isEnglish ? "Protected system or internal disk." : "システムまたは内蔵ディスクのため、安全を考慮し操作をロックしています。";
                     txtStatus.Foreground = System.Windows.Media.Brushes.Red;
                 }
                 else
                 {
-                    // 外部ディスク（USB等）の場合のみ、イジェクトを含めたディスク操作を有効化
                     btnClean.IsEnabled = true;
                     btnPartition.IsEnabled = true;
                     btnEject.IsEnabled = true;
-                    txtStatus.Text = "外部ディスク(USB等)が選択されました。操作可能です。";
+                    txtStatus.Text = _isEnglish ? "External disk selected. Operations available." : "外部ディスク(USB等)が選択されました。操作可能です。";
                     txtStatus.Foreground = System.Windows.Media.Brushes.Blue;
                 }
             }
@@ -137,19 +161,19 @@ namespace GUIDiskpart
 
             if (_selectedPartition != null)
             {
-                txtSelectedTarget.Text = $"選択項目: Disk {_selectedPartition.DiskNumber} / Partition {_selectedPartition.PartitionNumber}";
+                txtSelectedTarget.Text = _isEnglish ? $"Selected: Disk {_selectedPartition.DiskNumber} / Partition {_selectedPartition.PartitionNumber}" : $"選択項目: Disk {_selectedPartition.DiskNumber} / Partition {_selectedPartition.PartitionNumber}";
 
                 var disks = treeDisks.ItemsSource as List<DiskInfo>;
                 var parentDisk = disks?.FirstOrDefault(d => d.Number == _selectedPartition.DiskNumber);
 
                 if (parentDisk != null && (parentDisk.IsDangerous || parentDisk.IsInternal))
                 {
-                    txtStatus.Text = "保護対象（システムまたは内蔵）のパーティションのため操作できません。";
+                    txtStatus.Text = _isEnglish ? "Protected partition. Operations disabled." : "保護対象（システムまたは内蔵）のパーティションのため操作できません。";
                     txtStatus.Foreground = System.Windows.Media.Brushes.Red;
                 }
                 else if (_selectedPartition.Type == "Reserved" || _selectedPartition.Type == "System")
                 {
-                    txtStatus.Text = "システム/予約パーティションのため操作できません。";
+                    txtStatus.Text = _isEnglish ? "System or Reserved partition." : "システム/予約パーティションのため操作できません。";
                     txtStatus.Foreground = System.Windows.Media.Brushes.Red;
                 }
                 else
@@ -157,7 +181,7 @@ namespace GUIDiskpart
                     btnFormat.IsEnabled = true;
                     btnAssign.IsEnabled = true;
                     btnDeletePartition.IsEnabled = true;
-                    txtStatus.Text = "パーティション操作が可能です。";
+                    txtStatus.Text = _isEnglish ? "Partition operations available." : "パーティション操作が可能です。";
                     txtStatus.Foreground = System.Windows.Media.Brushes.Blue;
                 }
             }
@@ -166,14 +190,14 @@ namespace GUIDiskpart
         private async void btnClean_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedDisk == null) return;
-            if (MessageBox.Show($"Disk {_selectedDisk.Number} を全消去(初期化)します。\nすべてのデータが失われます。よろしいですか？",
-                "最終警告", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+            string msg = _isEnglish ? $"Erase (Clean) Disk {_selectedDisk.Number}?\nAll data will be lost." : $"Disk {_selectedDisk.Number} を全消去(初期化)します。\nすべてのデータが失われます。よろしいですか？";
+            if (MessageBox.Show(msg, "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
 
             string cmd = $"Set-Disk -Number {_selectedDisk.Number} -IsOffline $false -ErrorAction SilentlyContinue; " +
                          $"Set-Disk -Number {_selectedDisk.Number} -IsReadOnly $false -ErrorAction SilentlyContinue; " +
                          $"Clear-Disk -Number {_selectedDisk.Number} -RemoveData -RemoveOEM -Confirm:$false";
 
-            await ExecuteOperationAsync(cmd, "Cleanを処理中...");
+            await ExecuteOperationAsync(cmd, _isEnglish ? "Cleaning disk..." : "Cleanを処理中...");
         }
 
         private async void btnPartition_Click(object sender, RoutedEventArgs e)
@@ -184,28 +208,25 @@ namespace GUIDiskpart
                          $"Start-Sleep -Seconds 2; " +
                          $"New-Partition -DiskNumber {_selectedDisk.Number} -UseMaximumSize";
 
-            await ExecuteOperationAsync(cmd, "パーティションを作成中...");
+            await ExecuteOperationAsync(cmd, _isEnglish ? "Creating partition..." : "パーティションを作成中...");
         }
 
-        // --- ⏏️ 新規追加：安全な取り外し（イジェクト）処理 ---
         private async void btnEject_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedDisk == null) return;
 
-            // 言語環境（日本語/英語）に依存せず、Shell COM経由で確実にイジェクトする堅牢なスクリプト
             string cmd = $@"
                 $diskNum = {_selectedDisk.Number};
                 $parts = Get-Partition -DiskNumber $diskNum -ErrorAction SilentlyContinue;
                 $ejected = $false;
                 $sh = New-Object -ComObject Shell.Application;
-                $ns = $sh.Namespace(17); # 17 = ssfDRIVES (PC / マイ コンピューター)
+                $ns = $sh.Namespace(17);
 
                 foreach ($p in $parts) {{
                     if ($p.DriveLetter -and $p.DriveLetter -ne 0) {{
                         $letter = ([string]$p.DriveLetter).Trim() + ':';
                         $item = $ns.ParseName($letter);
                         if ($item) {{
-                            # 日本語('取り出し')または英語('Eject')の動詞を探して実行
                             $verb = $item.Verbs() | Where-Object {{ $_.Name -match '取り出し|Eject|切断|E&ject|安全' }} | Select-Object -First 1;
                             if ($verb) {{
                                 $verb.DoIt();
@@ -217,25 +238,22 @@ namespace GUIDiskpart
                         }}
                     }}
                 }}
-
-                # ドライブレターがない未フォーマット等の場合は、安全にキャッシュを吐き出してオフライン化する
                 if (-not $ejected) {{
                     Set-Disk -Number $diskNum -IsOffline $true -ErrorAction SilentlyContinue;
                 }}
             ";
 
-            SetBusyState(true, "安全に取り外し処理を実行中...");
+            SetBusyState(true, _isEnglish ? "Safely removing disk..." : "安全に取り外し処理を実行中...");
             try
             {
                 await RunStorageCommandAsync(cmd);
-                MessageBox.Show($"Disk {_selectedDisk.Number} ({_selectedDisk.FriendlyName}) を安全に取り外せる状態にしました。\nデバイスを抜いて構いません。",
-                                "安全な取り外し完了", MessageBoxButton.OK, MessageBoxImage.Information);
-                await LoadDisksAndPartitionsAsync(); // リストから消滅したことを反映
+                MessageBox.Show(_isEnglish ? "Disk is now safe to remove." : "Disk を安全に取り外せる状態にしました。", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                await LoadDisksAndPartitionsAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"取り外し失敗: {ex.Message}\nファイルを開いているプログラムがないか確認してください。", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-                SetBusyState(false, "エラーが発生しました。");
+                MessageBox.Show($"Failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                SetBusyState(false, _isEnglish ? "Error occurred." : "エラーが発生しました。");
             }
         }
 
@@ -245,31 +263,31 @@ namespace GUIDiskpart
 
             string cmd = $@"
                 $part = Get-Partition -DiskNumber {_selectedPartition.DiskNumber} -PartitionNumber {_selectedPartition.PartitionNumber} -ErrorAction Stop;
-                if (-not $part) {{ throw '対象のパーティションがシステム上に見つかりません。' }}
+                if (-not $part) {{ throw 'Partition not found.' }}
                 Start-Sleep -Seconds 2;
                 Format-Volume -Partition $part -FileSystem NTFS -Confirm:$false;
             ";
 
-            await ExecuteOperationAsync(cmd, "NTFSでフォーマットを実行中...");
+            await ExecuteOperationAsync(cmd, _isEnglish ? "Formatting to NTFS..." : "NTFSでフォーマットを実行中...");
         }
 
         private async void btnAssign_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedPartition == null) return;
             string cmd = $"Get-Partition -DiskNumber {_selectedPartition.DiskNumber} -PartitionNumber {_selectedPartition.PartitionNumber} | Add-PartitionAccessPath -AssignDriveLetter";
-            await ExecuteOperationAsync(cmd, "ドライブレターを自動割当中...");
+            await ExecuteOperationAsync(cmd, _isEnglish ? "Assigning drive letter..." : "ドライブレターを自動割当中...");
         }
 
         private async void btnDeletePartition_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedPartition == null) return;
-            if (MessageBox.Show($"Disk {_selectedPartition.DiskNumber} の Partition {_selectedPartition.PartitionNumber} を削除します。\nよろしいですか？",
-                "警告", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+            string msg = _isEnglish ? $"Delete partition {_selectedPartition.PartitionNumber}?" : $"Partition {_selectedPartition.PartitionNumber} を削除します。よろしいですか？";
+            if (MessageBox.Show(msg, "Warning", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
 
             string cmd = $"$err = $false; try {{ Remove-Partition -DiskNumber {_selectedPartition.DiskNumber} -PartitionNumber {_selectedPartition.PartitionNumber} -Confirm:$false -ErrorAction Stop }} catch {{ $err = $true }}; " +
                          $"if ($err) {{ Set-Disk -Number {_selectedPartition.DiskNumber} -IsReadOnly $false; Clear-Disk -Number {_selectedPartition.DiskNumber} -RemoveData -RemoveOEM -Confirm:$false }}";
 
-            await ExecuteOperationAsync(cmd, "パーティションを削除中...");
+            await ExecuteOperationAsync(cmd, _isEnglish ? "Deleting partition..." : "パーティションを削除中...");
         }
 
         private async Task ExecuteOperationAsync(string command, string busyMessage)
@@ -278,13 +296,13 @@ namespace GUIDiskpart
             try
             {
                 await RunStorageCommandAsync(command);
-                MessageBox.Show("処理が正常に完了しました。", "成功", MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show(_isEnglish ? "Operation completed successfully." : "処理が正常に完了しました。", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
                 await LoadDisksAndPartitionsAsync();
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"操作失敗: {ex.Message}", "エラー", MessageBoxButton.OK, MessageBoxImage.Error);
-                SetBusyState(false, "エラーが発生しました。");
+                MessageBox.Show($"Failed: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                SetBusyState(false, _isEnglish ? "Error occurred." : "エラーが発生しました。");
             }
         }
     }
@@ -309,7 +327,7 @@ namespace GUIDiskpart
         public string SizeGB => $"{(Size / 1024.0 / 1024.0 / 1024.0):F2}";
         public bool IsDangerous => IsSystem || IsBoot;
         public bool IsInternal => BusType != "USB" && !IsDangerous;
-        public string WarningLabel => IsDangerous ? " [OS保護]" : (IsInternal ? " [内蔵注意]" : "");
+        public string WarningLabel => IsDangerous ? " [OS Protected]" : (IsInternal ? " [Internal Caution]" : "");
     }
 
     public class PartitionInfo

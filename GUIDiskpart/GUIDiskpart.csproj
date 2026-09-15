@@ -14,4 +14,8 @@
     <Content Include="app.ico" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
+
 </Project>
