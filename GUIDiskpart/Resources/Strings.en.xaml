@@ -13,5 +13,7 @@
     <s:String x:Key="BtnAssign">4. Auto Assign Drive Letter</s:String>
     <s:String x:Key="BtnDeletePart">5. Delete Partition</s:String>
     <s:String x:Key="StatusWaiting">Waiting...</s:String>
+    <s:String x:Key="SelectedNone">Selected: None (select an item in the tree)</s:String>
+    <s:String x:Key="TreePartition" xml:space="preserve">└ Partition </s:String>
     <s:String x:Key="LangButton">日本語</s:String>
 </ResourceDictionary>

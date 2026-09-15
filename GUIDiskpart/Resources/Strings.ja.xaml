@@ -13,5 +13,7 @@
     <s:String x:Key="BtnAssign">4. ドライブレター自動割当</s:String>
     <s:String x:Key="BtnDeletePart">5. パーティション削除</s:String>
     <s:String x:Key="StatusWaiting">待機中...</s:String>
+    <s:String x:Key="SelectedNone">選択項目: なし (ツリーから選択してください)</s:String>
+    <s:String x:Key="TreePartition" xml:space="preserve">└ パーティション </s:String>
     <s:String x:Key="LangButton">English</s:String>
 </ResourceDictionary>

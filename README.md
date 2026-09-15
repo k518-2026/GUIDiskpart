@@ -1,19 +1,20 @@
 # 💾 GUI DiskPart Studio (`GUIDiskpart`)
 
-> A C# / WPF utility application that allows you to operate Windows' complex disk management commands (DiskPart / Storage API) via a safe, intuitive, and modern GUI[cite: 2].
+> A C# / WPF utility application that allows you to operate Windows' complex disk management commands (DiskPart / Storage API) via a safe, intuitive, and modern GUI.
 
-You can download the executable file.
+実行ファイルのダウンロード.
 https://github.com/k518-2026/GUIDiskpart/releases
 
 ---
 
 ## 🌟 Features
 
-*   **Fully GUI-based:** Eliminates command-line memorization and typos, enabling disk management through intuitive tree-view operations[cite: 2].
-*   **Ironclad Failsafe (Safety First):** Automatically detects the system drive where the OS is installed and internal disks, **completely locking operation buttons** to prevent destruction from accidental operations[cite: 2].
-*   **USB Hot-Plug Support:** Even if a USB flash drive is inserted or removed after launching the app, the "Rescan Disk Information" button instantly scans the latest state[cite: 2].
-*   **Asynchronous Processing (Async/Await):** The UI does not freeze even during heavy I/O processing, and a progress bar notifies you of visual progress and wait states[cite: 2].
-*   **Complete Prevention of Garbled Text:** Completely unifies JSON data exchange with PowerShell to UTF-8, ensuring stable operation in both Japanese and English environments[cite: 2].
+*   **Fully GUI-based:** Eliminates command-line memorization and typos, enabling disk management through intuitive tree-view operations.
+*   **Ironclad Failsafe (Safety First):** Automatically detects the system drive where the OS is installed and internal disks, **completely locking operation buttons** to prevent destruction from accidental operations.
+*   **USB Hot-Plug Support:** Even if a USB flash drive is inserted or removed after launching the app, the "Rescan Disk Information" button instantly scans the latest state.
+*   **Asynchronous Processing (Async/Await):** The UI does not freeze even during heavy I/O processing, and a progress bar notifies you of visual progress and wait states.
+*   **Complete Prevention of Garbled Text:** Completely unifies JSON data exchange with PowerShell to UTF-8, ensuring stable operation in both Japanese and English environments.
+*   **Japanese / English UI:** Switch the menu and messages between Japanese and English with the button at the top right.
 
 ---
 
@@ -30,6 +31,7 @@ https://github.com/k518-2026/GUIDiskpart/releases
 *   **USBホットプラグ対応:** アプリ起動後にUSBメモリを抜き差ししても、「ディスク情報を再認識」ボタンで即座に最新状態をスキャン。
 *   **非同期処理 (Async/Await):** 重いI/O処理中もUIがフリーズせず、プログレスバーによる視覚的な進捗・待機状態をお知らせ。
 *   **文字化け完全防止:** PowerShellとのJSONデータやり取りをUTF-8に完全統一し、日本語環境・英語環境の両方で安定動作。
+*   **日本語 / 英語の切り替え:** 右上のボタンで、メニューとメッセージを日本語と英語に切り替えられます。
 
 ---
 

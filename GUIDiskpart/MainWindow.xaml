@@ -43,7 +43,7 @@
                 <TreeView.Resources>
                     <DataTemplate x:Key="PartitionTemplate">
                         <StackPanel Orientation="Horizontal" Margin="2">
-                            <TextBlock Text="└ Partition " Foreground="#FF7A8288"/>
+                            <TextBlock Text="{DynamicResource TreePartition}" Foreground="#FF7A8288"/>
                             <TextBlock Text="{Binding PartitionNumber}" FontWeight="Bold" Margin="0,0,6,0" />
                             <TextBlock Text="{Binding DriveLetterString}" Foreground="#FF0056B3" FontWeight="Bold" Margin="0,0,6,0" />
                             <TextBlock Text="{Binding SizeGB}" Margin="0,0,4,0" />
@@ -80,7 +80,7 @@
             </DockPanel>
 
             <Border Background="White" BorderBrush="#FFCCD1D9" BorderThickness="1" CornerRadius="4" Padding="10" Margin="0,0,0,12">
-                <TextBlock x:Name="txtSelectedTarget" Text="Selected: None" FontWeight="Bold" TextWrapping="Wrap" Foreground="#FF333333"/>
+                <TextBlock x:Name="txtSelectedTarget" Text="{DynamicResource SelectedNone}" FontWeight="Bold" TextWrapping="Wrap" Foreground="#FF333333"/>
             </Border>
 
             <GroupBox Header="{DynamicResource GrpDiskOperation}" Margin="0,0,0,10" FontWeight="Bold">
